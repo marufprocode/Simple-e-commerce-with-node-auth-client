@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 export const sharedContext = createContext();
 
@@ -26,7 +27,28 @@ const UserContext = ({children}) => {
         return () => {
             controller.abort();
         }
-    },[user?.email])
+    },[user?.email]);
+
+    const {data:cartItems=[], refetch:refetchCart } = useQuery({
+        enabled: !!user?.email,
+        queryKey:["cartItems"],
+        queryFn: async () => {
+            const response = await axios.get(`http://localhost:5000/cart-items/?email=${user?.email}`, {
+                headers: {
+                    authorization: `bearer ${localStorage.getItem("Token")}`,
+                  }
+            })
+            if(response.data.cartItems){
+                return response.data.cartItems;
+            } else{
+                return response.data
+            }
+        }
+    }) 
+
+    console.log(cartItems);
+
+
 
 
     const contextInfo = {
@@ -35,7 +57,9 @@ const UserContext = ({children}) => {
         signUpError, 
         setSignUpError,
         user, 
-        setUser
+        setUser,
+        cartItems,
+        refetchCart
     };
     return (
         <div>

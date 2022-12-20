@@ -1,10 +1,12 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { FaCartPlus } from 'react-icons/fa';
-
+import { sharedContext } from '../../context/UserContext';
 
 const Products = () => {
     const [products, setProducts] = useState(null);
+    const {user, refetchCart} = useContext(sharedContext);
     console.log(products);
     useEffect(()=>{
         axios.get('http://localhost:5000/products')
@@ -16,7 +18,25 @@ const Products = () => {
     },[])
 
     const handleAddToCart = (product) => {
-    
+        if(user?.email){
+            product['buyerEmail'] = user?.email;
+            product['quantity'] = 1;
+            axios.put(`http://localhost:5000/addto-cart/?email=${user?.email}`, product, {
+                headers: {
+                    authorization: `bearer ${localStorage.getItem("Token")}`,
+                  } 
+            })
+            .then(res => {
+                if(res.data.success){
+                    toast.success(res.data.message);
+                    refetchCart();
+                }
+            }).catch(err => {
+                console.error('[error:]', err)
+            })
+        }else{
+            toast.error('Please Login to Purchase Product');
+        }
     }
     return (
         <div className='w-full my-10'>
@@ -32,8 +52,8 @@ const Products = () => {
                                 <p className='mt-2 text-lg'>Seller: {product.seller}</p>
                             </div>
                             <button onClick={() => handleAddToCart(product)} className='btn-cart bg-[#FFE0B3] w-[92%] rounded-md flex items-center justify-center py-3 hover:bg-[#eccfa3] transition-all mr-3 mb-3 absolute bottom-0'>
-                                <p className='btn-text'>Add to Cart</p>
-                                <FaCartPlus className='w-4 h-4'></FaCartPlus>
+                                    <p className='btn-text'>Add to Cart</p>
+                                    <FaCartPlus className='w-4 h-4'></FaCartPlus>
                             </button>
                         </div>
                     ))
