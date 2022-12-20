@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
+import { sharedContext } from '../../context/UserContext';
 
 const NavLinks = () => {
+    const {user} = useContext(sharedContext);
     return (
         <ul className='flex flex-col md:flex-row gap-4'>
         <li>
-        <NavLink>Home</NavLink>
+        <NavLink to="/home">Home</NavLink>
         </li>   
         <li>
-        <NavLink>Products</NavLink>
+        <NavLink to="/products">Products</NavLink>
         </li>   
         <li>
-        <NavLink>About</NavLink>
+        <NavLink to="/about">About</NavLink>
         </li>   
-        <li>
-        <NavLink to="/login">Login/Signup</NavLink>
-        </li>   
+        {
+            !user?.email &&
+            <li>
+            <NavLink to="/login">Login/Signup</NavLink>
+            </li>   
+        }
         </ul>
     );
 };

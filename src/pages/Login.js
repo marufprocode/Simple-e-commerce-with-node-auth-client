@@ -1,12 +1,39 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import React, { useContext, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 import { sharedContext } from '../context/UserContext';
+import { RotatingLines } from  'react-loader-spinner'
 
 const Login = () => {
-    const {signInError, setsignInError} = useContext(sharedContext);
+    const {signInError, setsignInError, /* user, */ setUser} = useContext(sharedContext);
+    const [loginProcessing, setLoginProcessing] = useState(false);
+    const navigate = useNavigate();
 
-    const handleUserSignIn = () => {
-        console.log('SignIn');
+    const handleUserSignIn = (e) => {
+        setLoginProcessing(true);
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+        axios.post('http://localhost:5000/login', {email, password})
+        .then(res => {
+            if(res.data.success){
+                    localStorage.setItem('Token', res.data.token);
+                    setUser(res.data.userData);
+                    toast.success('User LoggedIn Successfully');
+                    setLoginProcessing(false);
+                    navigate('/');
+            }else{
+                setsignInError(res.data.message);
+                toast.error(res.data.message);
+                setLoginProcessing(false);
+            }
+        })
+        .catch(err => {
+            console.error(["error:", err]);
+            setLoginProcessing(false);
+        });
+        
     }
 
     return (
@@ -76,9 +103,21 @@ const Login = () => {
             </div>
             <button
                 type="submit"
-                className="w-full px-8 py-3 font-semibold rounded-md bg-emerald-500 hover:bg-emerald-600 transition-all text-gray-900"
+                disabled={loginProcessing}
+                className="w-full px-8 py-3 font-semibold rounded-md bg-emerald-500 hover:bg-emerald-600 transition-all text-gray-900 flex justify-center"
             >
-                Sign in
+                {
+                    loginProcessing? 
+                    <RotatingLines 
+                      strokeColor="grey"
+                      strokeWidth="5"
+                      animationDuration="0.75"
+                      width="26"
+                      visible={true}
+                    />
+                    :
+                    "Sign In"
+                }
             </button>
             </form>
         </div>

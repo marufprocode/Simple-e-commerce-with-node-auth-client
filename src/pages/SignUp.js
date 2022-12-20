@@ -1,14 +1,17 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { sharedContext } from "../context/UserContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { RotatingLines } from  'react-loader-spinner'
 
 const SignUp = () => {
     const [showPass, setShowPass] = useState(false);
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const {signUpError, setSignUpError} = useContext(sharedContext);
+    const [signUpProcessing, setSignUpProcessing] = useState(false);
+    const navigate = useNavigate();
 
     const handleCreateUser = (e) => {
         e.preventDefault();
@@ -31,16 +34,23 @@ const SignUp = () => {
           const user = {
             name, email, password
           }
+          setSignUpProcessing(true);
           axios.post('http://localhost:5000/create-user', user)
           .then(res => {
             if(res.data.success){
-                toast.success(res.data.message, 'Please Login Now');
+                toast.success(`${res.data.message}, Please Login Now`);
                 setSignUpError(null);
+                navigate('/login');
+                setSignUpProcessing(false);
             }else{
                 console.error(res.data.message);
                 setSignUpError(res.data.message);
+                setSignUpProcessing(false);
             }
-          }).catch(err => console.error('Error:', err));
+          }).catch(err => {
+            console.error('Error:', err);
+            setSignUpProcessing(false);
+          });
           e.target.reset();
     }
   return (
@@ -132,9 +142,19 @@ const SignUp = () => {
               <div>
                 <button
                   type="submit"
-                  className="w-full px-8 py-3 font-semibold rounded-md bg-violet-400 text-gray-900 hover:bg-violet-500 transition-all"
+                  className="w-full px-8 py-3 font-semibold rounded-md bg-violet-400 text-gray-900 hover:bg-violet-500 transition-all flex justify-center"
+                  disabled={signUpProcessing}
                 >
-                  Sign Up
+                  {
+                    signUpProcessing? <RotatingLines 
+                      strokeColor="grey"
+                      strokeWidth="5"
+                      animationDuration="0.75"
+                      width="26"
+                      visible={true}
+                    />
+                    :"Sign Up"
+                  }
                 </button>
               </div>
               <p className="px-6 text-sm text-center text-gray-600">

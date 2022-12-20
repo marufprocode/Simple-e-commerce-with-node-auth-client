@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
+import { toast } from "react-hot-toast";
+import { sharedContext } from "../../context/UserContext";
 import NavLinks from "./NavLinks";
 
 const Header = () => {
+  const {user, setUser} = useContext(sharedContext);  
+  const handleSignOut = () => {
+    setUser(null);
+    localStorage.removeItem('Token');
+    toast.success('User Log Out Successfull');
+  }
   return (
     <div>
       <div className="navbar bg-base-100 shadow-md">
@@ -45,10 +53,12 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <div className="dropdown dropdown-end">
+          {
+            user?.email &&
+            <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
-                <img src="https://placeimg.com/80/80/people" alt=""/>
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="userImage"/>
               </div>
             </label>
             <ul
@@ -57,18 +67,19 @@ const Header = () => {
             >
               <li>
                 <a href="/#" className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
+                  {user?.name}
+                  <span className="badge">Wlecome!</span>
                 </a>
               </li>
               <li>
-                <a href="/#">Settings</a>
+                <a href="/#">{user?.email}</a>
               </li>
               <li>
-                <a href="/#">Logout</a>
+                <button onClick={handleSignOut}>Logout</button>
               </li>
             </ul>
           </div>
+          }
         </div>
       </div>
     </div>
