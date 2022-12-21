@@ -1,58 +1,62 @@
-import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { sharedContext } from "../context/UserContext";
 import axios from "axios";
+import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
-import { RotatingLines } from  'react-loader-spinner'
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { RotatingLines } from "react-loader-spinner";
+import { Link, useNavigate } from "react-router-dom";
+import { sharedContext } from "../context/UserContext";
 
 const SignUp = () => {
-    const [showPass, setShowPass] = useState(false);
-    const [showConfirmPass, setShowConfirmPass] = useState(false);
-    const {signUpError, setSignUpError} = useContext(sharedContext);
-    const [signUpProcessing, setSignUpProcessing] = useState(false);
-    const navigate = useNavigate();
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const { signUpError, setSignUpError } = useContext(sharedContext);
+  const [signUpProcessing, setSignUpProcessing] = useState(false);
+  const navigate = useNavigate();
 
-    const handleCreateUser = (e) => {
-        e.preventDefault();
-        const name = e.target.name.value;
-        const email = e.target.email.value;
-        const password = e.target.password.value;
-        const confirmPass = e.target.confirmpass.value;
-          if(!/(?=.*?[0-9])/.test(password)){
-            setSignUpError('Password should Contain At least one digit');
-            return;
-          }
-          if(password.length < 6){
-            setSignUpError('Password length should be at least 6 character');
-            return;
-          }
-          if (password !== confirmPass) {
-            setSignUpError('Password Did Not Match')
-            return;
-          }
-          const user = {
-            name, email, password
-          }
-          setSignUpProcessing(true);
-          axios.post('http://localhost:5000/create-user', user)
-          .then(res => {
-            if(res.data.success){
-                toast.success(`${res.data.message}, Please Login Now`);
-                setSignUpError(null);
-                navigate('/login');
-                setSignUpProcessing(false);
-            }else{
-                console.error(res.data.message);
-                setSignUpError(res.data.message);
-                setSignUpProcessing(false);
-            }
-          }).catch(err => {
-            console.error('Error:', err);
-            setSignUpProcessing(false);
-          });
-          e.target.reset();
+  const handleCreateUser = (e) => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const confirmPass = e.target.confirmpass.value;
+    if (!/(?=.*?[0-9])/.test(password)) {
+      setSignUpError("Password should Contain At least one digit");
+      return;
     }
+    if (password.length < 6) {
+      setSignUpError("Password length should be at least 6 character");
+      return;
+    }
+    if (password !== confirmPass) {
+      setSignUpError("Password Did Not Match");
+      return;
+    }
+    const user = {
+      name,
+      email,
+      password,
+    };
+    setSignUpProcessing(true);
+    axios
+      .post("https://simple-e-commerce-server.vercel.app/create-user", user)
+      .then((res) => {
+        if (res.data.success) {
+          toast.success(`${res.data.message}, Please Login Now`);
+          setSignUpError(null);
+          navigate("/login");
+          setSignUpProcessing(false);
+        } else {
+          console.error(res.data.message);
+          setSignUpError(res.data.message);
+          setSignUpProcessing(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        setSignUpProcessing(false);
+      });
+    e.target.reset();
+  };
   return (
     <div className="flex justify-center items-center min-h-screen py-10 px-5 md:px-0 w-full">
       <div>
@@ -79,7 +83,7 @@ const SignUp = () => {
                   name="name"
                   placeholder="Your Full Name..."
                   className="w-full px-3 py-2 border rounded-md border-gray-700 bg-gray-200 text-gray-700"
-                  onFocus={()=> setSignUpError(null)}
+                  onFocus={() => setSignUpError(null)}
                 />
               </div>
               <div>
@@ -145,16 +149,17 @@ const SignUp = () => {
                   className="w-full px-8 py-3 font-semibold rounded-md bg-violet-400 text-gray-900 hover:bg-violet-500 transition-all flex justify-center"
                   disabled={signUpProcessing}
                 >
-                  {
-                    signUpProcessing? <RotatingLines 
+                  {signUpProcessing ? (
+                    <RotatingLines
                       strokeColor="grey"
                       strokeWidth="5"
                       animationDuration="0.75"
                       width="26"
                       visible={true}
                     />
-                    :"Sign Up"
-                  }
+                  ) : (
+                    "Sign Up"
+                  )}
                 </button>
               </div>
               <p className="px-6 text-sm text-center text-gray-600">

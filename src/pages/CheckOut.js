@@ -1,12 +1,13 @@
-import React, { useContext } from "react";
-import { sharedContext } from "../context/UserContext";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import axios from "axios";
+import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { sharedContext } from "../context/UserContext";
 
 const CheckOut = () => {
   const { user, cartItems, refetchCart } = useContext(sharedContext);
+  const [removeProcessing, setRemoveProcessing] = useState(false);
 
   const totalPrice = cartItems.reduce(
     (accumulator, object) => accumulator + object.price * object.quantity,
@@ -14,9 +15,10 @@ const CheckOut = () => {
   );
 
   const handleRemoveItem = (id) => {
+    setRemoveProcessing(true);
     axios
       .delete(
-        `http://localhost:5000/delete-cart-item/?email=${user?.email}&id=${id}`,
+        `https://simple-e-commerce-server.vercel.app/delete-cart-item/?email=${user?.email}&id=${id}`,
         {
           headers: {
             authorization: `bearer ${localStorage.getItem("Token")}`,
@@ -27,10 +29,12 @@ const CheckOut = () => {
         if (res.data.success) {
           toast.success(res.data.message);
           refetchCart();
+          setRemoveProcessing(false);
         }
       })
       .catch((err) => {
         console.error("[error:]", err);
+        setRemoveProcessing(false);
       });
   };
 
@@ -68,6 +72,7 @@ const CheckOut = () => {
                       <div className="delete-container flex items-center">
                         <button
                           onClick={() => handleRemoveItem(item._id)}
+                          disabled={removeProcessing}
                           className="btn-delete w-14 h-14 rounded-full bg-red-300 hover:bg-red-400 flex items-center justify-center"
                         >
                           <RiDeleteBin5Line className="delete-icon text-red-600 h-[60%] w-[60%]"></RiDeleteBin5Line>
@@ -97,7 +102,12 @@ const CheckOut = () => {
         </>
       ) : (
         <div className="text-2xl text-center mt-10 font-semibold">
-          <h3>No Cart Items Found, <Link to="/home" className="underline text-teal-700">Shop Now</Link></h3>
+          <h3>
+            No Cart Items Found,{" "}
+            <Link to="/home" className="underline text-teal-700">
+              Shop Now
+            </Link>
+          </h3>
         </div>
       )}
     </>

@@ -2,9 +2,9 @@ import axios from "axios";
 import React, { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import brandLogo from "../../assets/logo-cutout.png";
 import { sharedContext } from "../../context/UserContext";
 import NavLinks from "./NavLinks";
-import brandLogo from "../../assets/logo-cutout.png"
 
 const Header = () => {
   const { user, setUser, cartItems, refetchCart } = useContext(sharedContext);
@@ -13,16 +13,19 @@ const Header = () => {
     setUser(null);
     localStorage.removeItem("Token");
     toast.success("User Log Out Successfull");
-    navigate('/home');
+    navigate("/home");
   };
 
   const handleClearCart = () => {
     axios
-      .delete(`http://localhost:5000/delete-cart/?email=${user?.email}`, {
-        headers: {
-          authorization: `bearer ${localStorage.getItem("Token")}`,
-        },
-      })
+      .delete(
+        `https://simple-e-commerce-server.vercel.app/delete-cart/?email=${user?.email}`,
+        {
+          headers: {
+            authorization: `bearer ${localStorage.getItem("Token")}`,
+          },
+        }
+      )
       .then((res) => {
         if (res.data.success) {
           toast.success(res.data.message);
@@ -54,7 +57,7 @@ const Header = () => {
         </div>
         <div className="flex-none">
           <div className="hidden md:flex">
-          <NavLinks />
+            <NavLinks />
           </div>
           {user?.email && (
             <div className="dropdown dropdown-end">
