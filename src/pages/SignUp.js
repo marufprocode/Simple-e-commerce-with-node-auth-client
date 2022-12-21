@@ -54,9 +54,9 @@ const SignUp = () => {
           e.target.reset();
     }
   return (
-    <div className="flex justify-center items-center min-h-screen py-10">
+    <div className="flex justify-center items-center min-h-screen py-10 px-5 md:px-0 w-full">
       <div>
-        <div className="flex shadow-xl flex-col max-w-lg py-6 px-5 md:px-10  rounded-md bg-teal-100 text-gray-700 w-[700px]">
+        <div className="flex shadow-xl flex-col py-6 px-5 md:px-10 rounded-md bg-indigo-100 text-gray-700 w-full max-w-lg">
           <div className="mb-8 text-center">
             <h1 className="my-3 text-4xl font-bold">Sign Up</h1>
             <p className="text-sm text-gray-400">

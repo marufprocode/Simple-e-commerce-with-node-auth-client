@@ -10,16 +10,21 @@ const NavLinks = () => {
         <NavLink to="/home">Home</NavLink>
         </li>   
         <li>
-        <NavLink to="/products">Products</NavLink>
+        <NavLink to="/home">Products</NavLink>
         </li>   
         <li>
         <NavLink to="/about">About</NavLink>
         </li>   
         {
             !user?.email &&
+            <>
             <li>
-            <NavLink to="/login">Login/Signup</NavLink>
+            <NavLink to="/login">Login</NavLink>
             </li>   
+            <li>
+            <NavLink to="/signup">Signup</NavLink>
+            </li>  
+            </> 
         }
         </ul>
     );

@@ -37,8 +37,8 @@ const Login = () => {
     }
 
     return (
-        <div className='flex min-h-screen justify-center items-center'>
-            <div className="w-full max-w-md p-4 rounded-md shadow sm:p-8 bg-teal-100 text-gray-700">
+        <div className='md:flex min-h-screen mt-16 md:mt-0 justify-center md:items-center h-fit max-h-[500px] px-5 md:px-0'>
+            <div className="w-full max-w-md p-4 rounded-md shadow sm:p-8 bg-indigo-100 text-gray-700">
             <h2 className="mb-3 text-3xl font-semibold text-center">
             Login to your account
             </h2>
@@ -56,7 +56,6 @@ const Login = () => {
             </div>
             <div className="flex items-center w-full my-4">
             <hr className="w-full text-gray-400" />
-            <p className="px-3 text-gray-500">OR</p>
             <hr className="w-full text-gray-400" />
             </div>
             <form
@@ -87,7 +86,6 @@ const Login = () => {
                         Forgot Password
                     </label>
                 </div>
-                    {/* <Modal/> */} 
                 <input
                     type="password"
                     name="password"
@@ -104,7 +102,7 @@ const Login = () => {
             <button
                 type="submit"
                 disabled={loginProcessing}
-                className="w-full px-8 py-3 font-semibold rounded-md bg-emerald-500 hover:bg-emerald-600 transition-all text-gray-900 flex justify-center"
+                className="w-full px-8 py-3 font-semibold rounded-md bg-indigo-400 hover:bg-indigo-500 transition-all text-gray-900 flex justify-center"
             >
                 {
                     loginProcessing? 

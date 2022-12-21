@@ -18,8 +18,10 @@ const Products = () => {
     },[])
 
     const handleAddToCart = (product) => {
+        delete product._id
         if(user?.email){
             product['buyerEmail'] = user?.email;
+            product['buyerName'] = user?.name;
             product['quantity'] = 1;
             axios.put(`http://localhost:5000/addto-cart/?email=${user?.email}`, product, {
                 headers: {
