@@ -56,8 +56,6 @@ const UserContext = ({ children }) => {
     },
   });
 
-  console.log(cartItems);
-
   const contextInfo = {
     signInError,
     setsignInError,

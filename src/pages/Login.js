@@ -2,16 +2,27 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { RotatingLines } from "react-loader-spinner";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { sharedContext } from "../context/UserContext";
+import { selectLoading, selectLoginError, selectUser } from "../redux/slices/userSlices";
+import { fetchUser } from '../redux/slices/userSlices';
+
 
 const Login = () => {
   const { signInError, setsignInError, /* user, */ setUser } =
     useContext(sharedContext);
   const [loginProcessing, setLoginProcessing] = useState(false);
   const navigate = useNavigate();
+  
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  // const loading = useSelector(selectLoading);
+  // const loginError = useSelector(selectLoginError);
+  console.log(user)
+  
 
-  const handleUserSignIn = (e) => {
+  /* const handleUserSignIn = (e) => {
     setLoginProcessing(true);
     e.preventDefault();
     const email = e.target.email.value;
@@ -38,6 +49,14 @@ const Login = () => {
         console.error(["error:", err]);
         setLoginProcessing(false);
       });
+  }; */
+  const handleUserSignIn = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const credential = {email, password};
+    dispatch(fetchUser(credential));
+
   };
 
   return (
