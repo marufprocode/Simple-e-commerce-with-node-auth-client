@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { getUser } from "../../api/authApi"
+import { getUser } from "../../api/authApi";
+import { toast } from "react-hot-toast";
+
+
 
 
 const initialState = {
@@ -36,16 +39,19 @@ const loginSlice = createSlice({
             state.isLoading = false;
             state.user = action.payload.userData;
             state.token = action.payload.token;
+            localStorage.setItem('Token', action.payload.token);
+            toast.success("User LoggedIn Successfully");
+
         },
         [fetchUser.rejected]: (state, action) => {
-            state.isLoading = true;
+            state.isLoading = false;
             state.loginError = action.error.message;
         },
     }
 })
 export const { setUser, getToken, logOut } = loginSlice.actions
 export const selectUser = (state) => state.user.user;
-export const selectLoading = (state) => state.user.loading;
+export const selectLoading = (state) => state.user.isLoading;
 export const selectLoginError = (state) => state.user.loginError;
 export const selectToken = (state) => state.login.token;
 

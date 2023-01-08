@@ -1,25 +1,27 @@
-import axios from "axios";
-import React, { useContext, useState } from "react";
-import { toast } from "react-hot-toast";
+// import axios from "axios";
+import React, { useContext, /* useState */ } from "react";
 import { RotatingLines } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, /* useNavigate */ } from "react-router-dom";
 import { sharedContext } from "../context/UserContext";
-import { selectLoading, selectLoginError, selectUser } from "../redux/slices/userSlices";
+import { /* selectLoading, selectLoginError, */ selectLoading, selectUser } from "../redux/slices/userSlices";
 import { fetchUser } from '../redux/slices/userSlices';
 
 
 const Login = () => {
-  const { signInError, setsignInError, /* user, */ setUser } =
+  const { signInError, /* setsignInError, user, setUser */ } =
     useContext(sharedContext);
-  const [loginProcessing, setLoginProcessing] = useState(false);
+  // const [loginProcessing, setLoginProcessing] = useState(false);
   const navigate = useNavigate();
   
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const isLoading = useSelector(selectLoading);
   // const loading = useSelector(selectLoading);
   // const loginError = useSelector(selectLoginError);
-  console.log(user)
+  if(user){
+    navigate('/')
+  }
   
 
   /* const handleUserSignIn = (e) => {
@@ -56,7 +58,6 @@ const Login = () => {
     const password = e.target.password.value;
     const credential = {email, password};
     dispatch(fetchUser(credential));
-
   };
 
   return (
@@ -126,10 +127,10 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            disabled={loginProcessing}
+            disabled={isLoading}
             className="w-full px-8 py-3 font-semibold rounded-md bg-indigo-400 hover:bg-indigo-500 transition-all text-gray-900 flex justify-center"
           >
-            {loginProcessing ? (
+            {isLoading ? (
               <RotatingLines
                 strokeColor="grey"
                 strokeWidth="5"
