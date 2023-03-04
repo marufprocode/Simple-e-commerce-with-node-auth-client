@@ -2,24 +2,28 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FaCartPlus } from "react-icons/fa";
+import { useDispatch } from "react-redux";
 import { sharedContext } from "../../context/UserContext";
+import { addProducts } from "../../redux/slices/productSlices";
 
 const Products = () => {
   const [products, setProducts] = useState(null);
   const { user, refetchCart } = useContext(sharedContext);
   const [addCartProcessing, setAddCartProcessing] = useState(false);
+  const dispatch = useDispatch()
   useEffect(() => {
     axios
       .get("https://simple-e-commerce-server.vercel.app/products")
       .then((res) => {
         if (res.data.success) {
           setProducts(res.data.products);
+          dispatch(addProducts(res.data.products))
         }
       })
       .catch((err) => {
         console.error("[Error]:", err)
       });
-  }, []);
+  }, [dispatch]);
 
   const handleAddToCart = (productOriginal) => {
     setAddCartProcessing(productOriginal._id);

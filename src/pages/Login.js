@@ -2,14 +2,17 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { RotatingLines } from "react-loader-spinner";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { sharedContext } from "../context/UserContext";
+import { addUser } from "../redux/slices/authSlice";
 
 const Login = () => {
   const { signInError, setsignInError, /* user, */ setUser } =
     useContext(sharedContext);
   const [loginProcessing, setLoginProcessing] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const handleUserSignIn = (e) => {
     setLoginProcessing(true);
@@ -24,7 +27,9 @@ const Login = () => {
       .then((res) => {
         if (res.data.success) {
           localStorage.setItem("Token", res.data.token);
+
           setUser(res.data.userData);
+          dispatch(addUser(res.data))
           toast.success("User LoggedIn Successfully");
           setLoginProcessing(false);
           navigate("/");
