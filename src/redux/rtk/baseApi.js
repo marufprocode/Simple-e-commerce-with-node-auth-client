@@ -20,7 +20,15 @@ const baseApi = createApi({
               body: userInfo,
             }),
           }),
+        getProducts: builder.query({
+            query: () => "/products",
+            keepUnusedDataFor:0.0001,
+          }),
     })
 })
+
+export const {
+  useGetProductsQuery, useLoginMutation
+} = baseApi;
 
 export default baseApi

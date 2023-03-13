@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
+import baseApi from "./rtk/baseApi";
 import authSlice from "./slices/authSlice";
 import productSlices from "./slices/productSlices";
 
@@ -9,6 +10,7 @@ import productSlices from "./slices/productSlices";
 const reducers = combineReducers({
   auth: authSlice,
   products: productSlices,
+  [baseApi.reducerPath]: baseApi.reducer,
 });
 
 const persistConfig = {
@@ -25,7 +27,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     }).concat(
-    //   cannabisProtectedApi.middleware,
+      baseApi.middleware,
     ),
 });
 
